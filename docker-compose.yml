@@ -1,0 +1,27 @@
+version: "3.7"
+services: 
+    postgres:
+        image: postgres
+        environment:
+            POSTGRES_PASSWORD: postgres
+        ports: 
+            - '5432:5432'
+        volumes: 
+            - expenses_db:/var/lib/postgresql/data
+
+    expenses-api:
+        build:
+            context: ./Server/
+        command: "nodemon -e ejs"
+        environment:
+            DB_SCHEMA: postgres
+            DB_USERNAME: postgres
+            DB_PASSWORD: postgres
+            DB_HOST: postgres
+        depends_on: 
+            - postgres
+        ports: 
+            - '3000:3000'
+            
+volumes: 
+    expenses_db:
