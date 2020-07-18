@@ -12,7 +12,6 @@ services:
     expenses-api:
         build:
             context: ./Server/
-        command: "nodemon -e ejs"
         environment:
             DB_SCHEMA: postgres
             DB_USERNAME: postgres
