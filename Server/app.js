@@ -6,6 +6,7 @@ var logger = require('morgan');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 var upload = multer();
+var jwt = require('express-jwt');
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
@@ -37,6 +38,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(jwt({ secret: process.env.TOKEN_SECRET, algorithms: ['HS256']}).unless(
+  { path: ['/users/auth', 
+           '/users/create'] }));
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
@@ -52,6 +57,10 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
+  if (err.name === 'UnauthorizedError') {
+    res.status(401).send('invalid token...');
+  }
+
   res.status(err.status || 500);
   res.render('error');
 });
