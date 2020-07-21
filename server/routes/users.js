@@ -1,8 +1,8 @@
-var models = require('../models');
-var express = require('express');
-var bcrypt = require('bcrypt');
-var jwt = require('jsonwebtoken');
-var router = express.Router();
+const models = require('../models');
+const express = require('express');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const router = express.Router();
 
 /* GET users listing. */
 router.get('/', async function(req, res, next) {

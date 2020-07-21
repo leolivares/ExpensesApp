@@ -1,22 +1,22 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
-var multer = require('multer');
-var upload = multer();
-var jwt = require('express-jwt');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
+const multer = require('multer');
+const upload = multer();
+const jwt = require('express-jwt');
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var expensesRouter = require('./routes/expenses');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const expensesRouter = require('./routes/expenses');
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
