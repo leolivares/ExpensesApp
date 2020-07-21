@@ -1,4 +1,4 @@
-# Expenses App
+# Expenses App :dollar:
 
 Expenses app is a web app created with the objective of helping users manage their expenses, as well as allow them to learn and visualize how their money is spent.
 
@@ -55,7 +55,7 @@ docker exec -it expensesapp_postgres_1 /bin/bash # (PSQL Container)
         ``` python
         cd server
         #Example
-        node_modules/.bin/sesquelize model:generate --name User --attributes firstName:string lastName:string,email:string
+        node_modules/.bin/sequelize model:generate --name User --attributes firstName:string lastName:string,email:string
         ```
 
 ## Deployment
