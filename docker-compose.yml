@@ -11,7 +11,7 @@ services:
 
     expenses-api:
         build:
-            context: ./Server/
+            context: ./server/
         environment:
             DB_SCHEMA: postgres
             DB_USERNAME: postgres
