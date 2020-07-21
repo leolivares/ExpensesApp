@@ -53,16 +53,17 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
+  console.log('Error handling');
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
   if (err.name === 'UnauthorizedError') {
-    res.status(401).send('invalid token...');
+    res.status(401).send('Invalid Token');
   }
 
   res.status(err.status || 500);
-  res.render('error');
+  res.send(err.message);
 });
 
 module.exports = app;
