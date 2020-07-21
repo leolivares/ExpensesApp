@@ -14,6 +14,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var expensesRouter = require('./routes/expenses');
 
 var app = express();
 
@@ -44,6 +45,7 @@ app.use(jwt({ secret: process.env.TOKEN_SECRET, algorithms: ['HS256']}).unless(
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/expenses', expensesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,4 +1,4 @@
-var models = require('../models')
+var models = require('../models');
 var express = require('express');
 var bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
