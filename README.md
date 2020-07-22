@@ -41,7 +41,7 @@ docker exec -it <container-name> /bin/bash
 docker exec -it expensesapp_expenses-api_1 /bin/bash # (API Container)
 docker exec -it expensesapp_postgres_1 /bin/bash # (PSQL Container)
 ```
-- To access the postgres database trough the terminal
+- To access the postgres database through the terminal
     * Once inside the container
         ``` python
         psql -U postgres
