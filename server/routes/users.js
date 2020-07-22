@@ -21,7 +21,7 @@ router.post('/auth', async function(req, res, next) {
     if (user) {
       let result = await bcrypt.compare(password, user.password);
       if (result) {
-        let token = jwt.sign({ email }, process.env.TOKEN_SECRET)
+        let token = jwt.sign({ email, id: user.id }, process.env.TOKEN_SECRET)
         return res.json(token);
       }
     }
