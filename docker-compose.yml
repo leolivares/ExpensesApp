@@ -21,6 +21,20 @@ services:
             - postgres
         ports: 
             - '3000:3000'
+
+    expenses-react:
+        build:
+            context: ./client/
+        volumes:
+            - ./client/:/home/node/app/client
+            - /home/node/app/client/node_modules
+        ports:
+            - 3001:3001
+        environment: 
+            - CHOKIDAR_USEPOLLING=true
+        depends_on: 
+            - expenses-api
+        stdin_open: true
             
 volumes: 
     expenses_db:
