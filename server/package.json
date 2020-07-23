@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "./node_modules/.bin/sequelize db:migrate && node ./bin/www"
+    "start": "./node_modules/.bin/sequelize db:migrate && node ./bin/www",
+    "start.dev": "nodemon -L -e ejs,js,html"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
