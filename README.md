@@ -26,8 +26,9 @@ cd ExpensesApp
 
 Build and run the docker service
 
-```
+``` python
 docker-compose up --build
+docker-compose up --build --renew-anon-volumes # (To update dependencies)
 ```
 
 ## Development Tools
