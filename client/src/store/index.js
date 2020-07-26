@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit';
-import ReactFaker from 'react-faker';
 
 
 const store = configureStore({
