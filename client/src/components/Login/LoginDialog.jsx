@@ -1,11 +1,11 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { authenticateUser, displayDialog } from "./../../features/Login/loginSlice";
 import { makeStyles } from '@material-ui/core/styles';
 import LoginForm from './LoginForm';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import Grid from '@material-ui/core/Grid';
@@ -22,15 +22,19 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function LoginDialog() {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
-  const [open, setOpen] = React.useState(false);
+  const { openDialog } = useSelector(state => state.login);
+
+  // const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
-    setOpen(true);
+    dispatch(displayDialog(true));
   };
 
   const handleClose = () => {
-    setOpen(false);
+    dispatch(displayDialog(false));
+    // dispatch(authenticateUser({username: "Leo"}));
   };
 
   return (
@@ -39,7 +43,7 @@ export default function LoginDialog() {
         Login
       </Button>
       <Dialog
-        open={open}
+        open={openDialog}
         TransitionComponent={Transition}
         keepMounted
         onClose={handleClose}
