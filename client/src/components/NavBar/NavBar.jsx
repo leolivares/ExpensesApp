@@ -1,5 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import LoginDialog from './../Login/LoginDialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -30,9 +31,10 @@ export default function NavBar() {
               <MenuIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-              News
+              Expenses App
           </Typography>
-          <Button color="inherit">Login</Button>
+          <LoginDialog></LoginDialog>
+          <Button color="inherit">Register</Button>
           </Toolbar>
       </AppBar>
   );
