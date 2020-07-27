@@ -1,5 +1,18 @@
 version: "3.7"
 services: 
+    web:
+        image: nginx
+        build: 
+            context: ./nginx/
+        restart: always
+        ports: 
+            - 80:80
+        networks: 
+            - expenses-network
+        depends_on: 
+            - expenses-react
+            - expenses-api
+        
     postgres:
         image: postgres
         environment:
@@ -8,6 +21,8 @@ services:
             - '5432:5432'
         volumes: 
             - expenses_db:/var/lib/postgresql/data
+        networks: 
+            - expenses-network
 
     expenses-api:
         build:
@@ -23,6 +38,8 @@ services:
             - postgres
         ports: 
             - '3000:3000'
+        networks:
+            - expenses-network
 
     expenses-react:
         build:
@@ -37,6 +54,11 @@ services:
         depends_on: 
             - expenses-api
         stdin_open: true
+        networks: 
+            - expenses-network
             
 volumes: 
     expenses_db:
+
+networks: 
+    expenses-network:
