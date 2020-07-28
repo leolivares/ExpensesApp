@@ -34,7 +34,7 @@ export default function LoginDialog() {
 
   const handleClose = () => {
     dispatch(displayDialog(false));
-    // dispatch(authenticateUser({username: "Leo"}));
+    dispatch(authenticateUser({email: "leolivares@uc.cl", password: '123123'}));
   };
 
   return (

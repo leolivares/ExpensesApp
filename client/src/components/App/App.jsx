@@ -22,7 +22,6 @@ export default function App() {
       <NavBar> </NavBar>
 
       <Container maxWidth='lg'>
-        Hola
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Paper className={classes.paper}>xs=12</Paper>

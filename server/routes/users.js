@@ -16,18 +16,17 @@ router.get('/', async function(req, res, next) {
 router.post('/auth', async function(req, res, next) {
   let email = req.body.email;
   let password = req.body.password;
-  if (email && password) {
+  try {
     let user = await models.User.findOne({ where: { email } });
-    if (user) {
-      let result = await bcrypt.compare(password, user.password);
-      if (result) {
-        let token = jwt.sign({ email, id: user.id }, process.env.TOKEN_SECRET)
-        return res.json(token);
-      }
+    let result = await bcrypt.compare(password, user.password);
+    if (result) {
+      let token = jwt.sign({ email, id: user.id }, process.env.TOKEN_SECRET)
+      return res.json(token);
     }
-    return res.status(401).send('Invalid Email/Password');
+    next(Error("Invalid Email/Password"));
+  } catch(error) {
+    next(error);
   }
-  return res.status(400).send('Invalid Email/Password');
 });
 
 router.post('/create', async function(req, res, next) {
