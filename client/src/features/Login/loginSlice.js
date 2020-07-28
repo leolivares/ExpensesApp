@@ -1,11 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { authUser } from "./../../utils/userApi";
+import Cookies from 'js-cookie';
 
 
 export const authenticateUser = createAsyncThunk(
     'users/authenticate',
     async (userInfo, thunkAPI) => {
         const response = await authUser(userInfo.email, userInfo.password);
+        Cookies.set('token', response);
+        console.log(Cookies.get());
         return response;
     }
 ) 
