@@ -36,8 +36,6 @@ export default function LoginDialog() {
     // dispatch(authenticateUser({email: "leolivares@uc.cl", password: '123123'}));
   };
 
-
-
   return (
     <div>
       <Button color="inherit" onClick={handleClickOpen}>

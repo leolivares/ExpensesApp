@@ -8,6 +8,7 @@ export const authenticateUser = createAsyncThunk(
     async (userInfo, thunkAPI) => {
         const response = await authUser(userInfo.email, userInfo.password);
         Cookies.set('token', response);
+        thunkAPI.dispatch(displayDialog(false));
         return response;
     }
 ) 
@@ -16,7 +17,8 @@ const loginSlice = createSlice({
     name: 'login',
     initialState: {
         loading: false,
-        openDialog: false
+        openDialog: false,
+        failedLogin: false
     },
     reducers: {
         displayDialog(state, action) {
@@ -33,6 +35,7 @@ const loginSlice = createSlice({
         },
         [authenticateUser.rejected]: (state, action) => {
             state.loading = false;
+            state.failedLogin = true;
         }
     }
 })

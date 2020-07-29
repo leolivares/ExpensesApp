@@ -16,6 +16,7 @@ router.get('/', async function(req, res, next) {
 router.post('/auth', async function(req, res, next) {
   let email = req.body.email;
   let password = req.body.password;
+  console.log(email, password);
   try {
     let user = await models.User.findOne({ where: { email } });
     let result = await bcrypt.compare(password, user.password);

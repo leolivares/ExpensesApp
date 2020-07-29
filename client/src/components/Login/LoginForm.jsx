@@ -45,6 +45,7 @@ const LoginTextField = withStyles({
 export default function LoginForm() {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const { failedLogin } = useSelector(state => state.login);
 
   const [inputEmail, setInputEmail] = useState('');
   const [inputPassword, setInputPassword] = useState('');
@@ -58,14 +59,10 @@ export default function LoginForm() {
 
   const handleClose = () => {
     dispatch(displayDialog(false));
-    // dispatch(authenticateUser({email: "leolivares@uc.cl", password: '123123'}));
   }
 
   const handleLogin = () => {
-    console.log(inputEmail);
-    console.log(inputPassword);
     if (!inputEmail) {
-      console.log(emailField.current);
       setValidEmail(false);
       setEmailHelper("Email Required");
     }
@@ -73,7 +70,7 @@ export default function LoginForm() {
       setValidPassword(false);
       setPasswordHelper("Password Required");
     }
-    // dispatch(displayDialog(false));
+    dispatch(authenticateUser({ email: inputEmail, password: inputPassword }));
   }
 
   return (
@@ -87,7 +84,7 @@ export default function LoginForm() {
           variant="outlined"
           id="email-input"
           margin="normal"
-          error={!validEmail}
+          error={!validEmail || failedLogin}
           helperText={emailHelper}
           fullWidth
           onChange={e => setInputEmail(e.target.value)}
@@ -98,13 +95,14 @@ export default function LoginForm() {
           className={classes.textField}
           label="Password"
           variant="outlined"
-          id="custom-css-outlined-input"
+          id="password-input"
           margin="normal"
           fullWidth
-          error={!validPassword}
+          error={!validPassword || failedLogin}
           helperText={passwordHelper}
           onChange={e => setInputPassword(e.target.value)}
           ref={passwordField}
+          type="password"
         />
       </DialogContent>
       <DialogActions>
