@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/', async function(req, res, next) {
   console.log(req.user);
   const users = await models.User.findAll({
-    attributes: ['id', 'first_name', 'last_name', 'email']
+    attributes: ['id', 'first_name', 'last_name', 'email', 'birthday']
   });
   res.send(JSON.stringify(users));
 });
@@ -31,15 +31,17 @@ router.post('/auth', async function(req, res, next) {
 });
 
 router.post('/create', async function(req, res, next) {
-  const { username, password, email } = req.body;
+  const { password, email, first_name, last_name, birthday } = req.body;
   try {
     let hash = await bcrypt.hash(password, 10);
     const user = await models.User.create({
-      username,
       password: hash,
-      email
+      email,
+      first_name,
+      last_name,
+      birthday
     })
-    res.send(`Create User ${username} ${password} ${email}`);
+    res.send(`Create User ${email} ${password} ${first_name} ${last_name} ${birthday}`);
   } catch (err) {
     res.status(500).send(err.message);
   }

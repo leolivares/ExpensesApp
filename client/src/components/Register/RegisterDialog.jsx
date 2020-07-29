@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { displayDialog } from "./../../features/Login/loginSlice";
+import { displayDialog } from "./../../features/Register/registerSlice";
 // import { makeStyles } from '@material-ui/core/styles';
-import LoginForm from './LoginForm';
+import RegisterForm from './RegisterForm';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -18,12 +18,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
 });
 
-export default function LoginDialog() {
-  // const classes = useStyles();
+export default function RegisterDialog() {
+//   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { openDialog } = useSelector(state => state.login);
-
+  const { openDialog } = useSelector(state => state.register);
 
   const handleClickOpen = () => {
     dispatch(displayDialog(true));
@@ -31,13 +30,12 @@ export default function LoginDialog() {
 
   const handleClose = () => {
     dispatch(displayDialog(false));
-    // dispatch(authenticateUser({email: "leolivares@uc.cl", password: '123123'}));
   };
 
   return (
     <div>
       <Button color="inherit" onClick={handleClickOpen}>
-        Log In
+        Register
       </Button>
       <Dialog
         open={openDialog}
@@ -48,8 +46,8 @@ export default function LoginDialog() {
         aria-describedby="alert-dialog-slide-description"
       >
         <Container>
-          <DialogTitle id="form-dialog-title">Log In</DialogTitle> 
-          <LoginForm></LoginForm>
+          <DialogTitle id="form-dialog-title">Sign Up</DialogTitle> 
+          <RegisterForm></RegisterForm>
         </Container>
       </Dialog>
     </div>

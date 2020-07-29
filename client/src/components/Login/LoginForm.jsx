@@ -62,15 +62,20 @@ export default function LoginForm() {
   }
 
   const handleLogin = () => {
+    let validInputs = true;
     if (!inputEmail) {
       setValidEmail(false);
       setEmailHelper("Email Required");
+      validInputs = false;
     }
     if (!inputPassword) {
       setValidPassword(false);
       setPasswordHelper("Password Required");
+      validInputs = false;
     }
-    dispatch(authenticateUser({ email: inputEmail, password: inputPassword }));
+    if (validInputs) {
+        dispatch(authenticateUser({ email: inputEmail, password: inputPassword }));
+    }
   }
 
   return (
