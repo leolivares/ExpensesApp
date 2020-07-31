@@ -9,7 +9,7 @@ export const authenticateUser = createAsyncThunk(
         try {
             const response = await authUser(userInfo.email, userInfo.password);
             Cookies.set('token', response);
-            thunkAPI.dispatch(displayDialog(false));
+            thunkAPI.dispatch(loginUser());
             userInfo.loginDispatch({ type: 'clear' });
             return response;
         } catch (e) {
@@ -31,6 +31,10 @@ const loginSlice = createSlice({
         displayDialog(state, action) {
             const display = action.payload;
             state.openDialog = display;
+        },
+        loginUser(state, action) {
+            state.openDialog = false;
+            state.loginStatus = true;
         }
     },
     extraReducers: {
@@ -50,5 +54,5 @@ const loginSlice = createSlice({
 })
 
 
-export const { displayDialog } = loginSlice.actions;
+export const { displayDialog, loginUser } = loginSlice.actions;
 export default loginSlice.reducer;

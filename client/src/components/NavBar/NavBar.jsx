@@ -1,5 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { useDispatch, useSelector } from 'react-redux';
 import LoginDialog from './../Login/LoginDialog';
 import RegisterDialog from './../Register/RegisterDialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -23,6 +24,16 @@ const useStyles = makeStyles((theme) => ({
 
 export default function NavBar() {
   const classes = useStyles();
+  const { loginStatus } = useSelector(state => state.login);
+  let userStatus;
+  if (!loginStatus) {
+    userStatus = <>
+    <LoginDialog></LoginDialog>
+    <RegisterDialog></RegisterDialog>
+    </>
+  } else {
+    userStatus = <div>Hola</div>
+  }
 
   return (
       <AppBar position="static">
@@ -33,8 +44,8 @@ export default function NavBar() {
           <Typography variant="h6" className={classes.title}>
               Expenses App
           </Typography>
-          <LoginDialog></LoginDialog>
-          <RegisterDialog></RegisterDialog>
+          {userStatus}
+
           </Toolbar>
       </AppBar>
   );
