@@ -5,14 +5,19 @@ import { createUser } from "./../../utils/userApi";
 export const registerUser = createAsyncThunk(
     'users/register',
     async (userInfo, thunkAPI) => {
-        console.log(`BD: ${userInfo.birthday}`);
-        const response = await createUser(userInfo.email, 
-                                          userInfo.first_name, 
-                                          userInfo.last_name, 
-                                          userInfo.birthday, 
-                                          userInfo.password);
-        thunkAPI.dispatch(displayDialog(false));
-        return response;
+        try {
+            const response = await createUser(userInfo.email, 
+                userInfo.first_name, 
+                userInfo.last_name, 
+                userInfo.birthday, 
+                userInfo.password);
+            thunkAPI.dispatch(displayDialog(false));
+            userInfo.registerDispatch({ type: 'clear' });
+            return response;
+        } catch(e) {
+            userInfo.registerDispatch({ type: 'registerFailed' });
+            return thunkAPI.rejectWithValue("Email already in use");
+        }
     }
 ) 
 

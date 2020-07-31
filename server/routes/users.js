@@ -41,9 +41,9 @@ router.post('/create', async function(req, res, next) {
       last_name,
       birthday
     })
-    res.send(`Create User ${email} ${password} ${first_name} ${last_name} ${birthday}`);
-  } catch (err) {
-    res.status(500).send(err.message);
+    return res.json(`Created User ${email} ${first_name} ${last_name} ${birthday}`);
+  } catch(error) {
+    next(Error("Email already in use"));
   }
 });
 

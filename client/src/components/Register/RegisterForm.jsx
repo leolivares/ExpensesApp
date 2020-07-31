@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useReducer } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser, displayDialog } from "./../../features/Register/registerSlice";
@@ -45,22 +45,47 @@ const RegisterTextField = withStyles({
 export default function LoginForm() {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const { failedRegister } = useSelector(state => state.register);
 
-    const [inputEmail, setInputEmail] = useState('');
-    const [inputPassword, setInputPassword] = useState('');
-    const [inputPasswordConfirmation, setInputPasswordConfirmation] = useState('');
-    const [inputFirstName, setInputFirstName] = useState('');
-    const [inputLastName, setInputLastName] = useState('');
-    const [inputBirthday, setInputBirthday] = useState('');
-    const [validNames, setValidNames] = useState(true);
-    const [namesHelper, setNamesHelper] = useState('');
-    const [validEmail, setValidEmail] = useState(true);
-    const [emailHelper, setEmailHelper] = useState('');
-    const [validBirthday, setValidBirthday] = useState(true);
-    const [birthdayHelper, setBirthdayHelper] = useState('');
-    const [validPassword, setValidPassword] = useState(true);
-    const [passwordHelper, setPasswordHelper] = useState('');
+    const registerInitialState = {
+        inputEmail: '',
+        inputPassword: '',
+        inputPasswordConfirmation: '',
+        inputFirstName: '',
+        inputLastName: '',
+        inputBirthday: '',
+        validBirthday: true,
+        birthdayHelper: '',
+        validNames: true,
+        namesHelper: '',
+        validEmail: true,
+        emailHelper: '',
+        validPassword: true,
+        passwordHelper: ''
+    };
+
+    const registerReducer = (state, action) => {
+        switch (action.type) {
+            case 'valueChange':
+                return { ...state, [action.name]: action.value };
+            case 'resetFormErrors':
+                return { ...registerInitialState, inputEmail: state.inputEmail, 
+                                                  inputPassword: state.inputPassword,
+                                                  inputBirthday: state.inputBirthday,
+                                                  inputFirstName: state.inputFirstName,
+                                                  inputLastName: state.inputLastName };
+            case 'registerFailed':
+                return {
+                    ...state, emailHelper: 'Email already in use',
+                              validEmail: false
+                };
+            case 'clear':
+                return { ...registerInitialState };
+            default:
+                return state;
+        }
+    }
+
+    const [registerState, registerDispatch] = useReducer(registerReducer, registerInitialState);
 
 
     const handleClose = () => {
@@ -69,38 +94,42 @@ export default function LoginForm() {
 
     const handleRegister = () => {
         let validInputs = true;
-        if (!inputEmail) {
-            setValidEmail(false);
-            setEmailHelper("Email Required");
+        registerDispatch({ type: 'resetFormErrors' });
+        if (!registerState.inputEmail) {
+            registerDispatch({ type: 'valueChange', name: 'validEmail', value: false });
+            registerDispatch({ type: 'valueChange', name: 'emailHelper', value: "Email Required" });
             validInputs = false;
         }
-        if (!inputFirstName || !inputLastName) {
-            setValidNames(false);
-            setNamesHelper("Names are required");
+        if (!registerState.inputFirstName || !registerState.inputLastName) {
+            registerDispatch({ type: 'valueChange', name: 'validNames', value: false });
+            registerDispatch({ type: 'valueChange', name: 'namesHelper', value: "Names are required" });
             validInputs = false;
         }
-        if (!inputBirthday) {
-            validInputs = false;
-            setValidBirthday(false);
-            setBirthdayHelper('Birthdate is required');
-        }
-        if (!inputPassword || !inputPasswordConfirmation) {
-            setValidPassword(false);
-            setPasswordHelper("Password Required");
+        if (!registerState.inputBirthday) {
+            registerDispatch({ type: 'valueChange', name: 'validBirthday', value: false });
+            registerDispatch({ type: 'valueChange', name: 'birthdayHelper', value: 'Birthdate is required' });
             validInputs = false;
         }
-        if (inputPassword !== inputPasswordConfirmation) {
-            setValidPassword(false);
-            setPasswordHelper("Passwords doesn't match");
+        if (!registerState.inputPassword || !registerState.inputPasswordConfirmation) {
+            registerDispatch({ type: 'valueChange', name: 'validPassword', value: false });
+            registerDispatch({ type: 'valueChange', name: 'passwordHelper', value: 'Password Required' });
+            validInputs = false;
+        }
+        if (registerState.inputPassword !== registerState.inputPasswordConfirmation) {
+            registerDispatch({ type: 'valueChange', name: 'validPassword', value: false });
+            registerDispatch({ type: 'valueChange', name: 'passwordHelper', value: "Passwords doesn't match" });
             validInputs = false;
         }
         if (validInputs) {
             dispatch(registerUser(
-                { email: inputEmail, 
-                  password: inputPassword, 
-                  first_name: inputFirstName,
-                  last_name: inputLastName,
-                  birthday: inputBirthday}));
+                {
+                    email: registerState.inputEmail,
+                    password: registerState.inputPassword,
+                    first_name: registerState.inputFirstName,
+                    last_name: registerState.inputLastName,
+                    birthday: registerState.inputBirthday,
+                    registerDispatch
+                }));
         }
     }
 
@@ -115,10 +144,11 @@ export default function LoginForm() {
                     variant="outlined"
                     id="email-input"
                     margin="normal"
-                    error={!validEmail || failedRegister}
-                    helperText={emailHelper}
+                    value={registerState.inputEmail}
+                    error={!registerState.validEmail}
+                    helperText={registerState.emailHelper}
                     fullWidth
-                    onChange={e => setInputEmail(e.target.value)}
+                    onChange={e => registerDispatch({type: 'valueChange', name: 'inputEmail', value: e.target.value})}
                 />
 
                 <RegisterTextField
@@ -128,10 +158,11 @@ export default function LoginForm() {
                     variant="outlined"
                     id="firstname-input"
                     margin="normal"
-                    error={!validNames}
-                    helperText={namesHelper}
+                    value={registerState.inputFirstName}
+                    error={!registerState.validNames}
+                    helperText={registerState.namesHelper}
                     fullWidth
-                    onChange={e => setInputFirstName(e.target.value)}
+                    onChange={e => registerDispatch({type: 'valueChange', name: 'inputFirstName', value: e.target.value})}
                 />
 
                 <RegisterTextField
@@ -141,10 +172,11 @@ export default function LoginForm() {
                     variant="outlined"
                     id="lastname-input"
                     margin="normal"
-                    error={!validNames}
-                    helperText={namesHelper}
+                    value={registerState.inputLastName}
+                    error={!registerState.validNames}
+                    helperText={registerState.namesHelper}
                     fullWidth
-                    onChange={e => setInputLastName(e.target.value)}
+                    onChange={e => registerDispatch({type: 'valueChange', name: 'inputLastName', value: e.target.value})}
                 />
 
                 <RegisterTextField
@@ -158,9 +190,10 @@ export default function LoginForm() {
                     InputLabelProps={{
                         shrink: true,
                     }}
-                    error={!validBirthday}
-                    helperText={birthdayHelper}
-                    onChange={e => setInputBirthday(e.target.value)}
+                    value={registerState.inputBirthday}
+                    error={!registerState.validBirthday}
+                    helperText={registerState.birthdayHelper}
+                    onChange={e => registerDispatch({type: 'valueChange', name: 'inputBirthday', value: e.target.value})}
                     required
                 />
 
@@ -171,9 +204,10 @@ export default function LoginForm() {
                     id="password-input"
                     margin="normal"
                     fullWidth
-                    error={!validPassword || failedRegister}
-                    helperText={passwordHelper}
-                    onChange={e => setInputPassword(e.target.value)}
+                    value={registerState.inputPassword}
+                    error={!registerState.validPassword}
+                    helperText={registerState.passwordHelper}
+                    onChange={e => registerDispatch({type: 'valueChange', name: 'inputPassword', value: e.target.value})}
                     type="password"
                 />
 
@@ -184,9 +218,10 @@ export default function LoginForm() {
                     id="password-confirmation-input"
                     margin="normal"
                     fullWidth
-                    error={!validPassword}
-                    helperText={passwordHelper}
-                    onChange={e => setInputPasswordConfirmation(e.target.value)}
+                    value={registerState.inputPasswordConfirmation}
+                    error={!registerState.validPassword}
+                    helperText={registerState.passwordHelper}
+                    onChange={e => registerDispatch({type: 'valueChange', name: 'inputPasswordConfirmation', value: e.target.value})}
                     type="password"
                 />
             </DialogContent>

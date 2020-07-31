@@ -59,13 +59,19 @@ export default function LoginForm() {
     switch (action.type) {
       case 'valueChange':
         return { ...state, [action.name]: action.value };
+      case 'resetFormErrors':
+        return { ...loginInitialState, inputEmail: state.inputEmail, inputPassword: state.inputPassword };
+      case 'loginFailed':
+        return { ...state, emailHelper: 'Invalid Email/Password', 
+                           passwordHelper: 'Invalid Email/Password', 
+                           validEmail: false, 
+                           validPassword: false };
       case 'clear':
         return { ...loginInitialState };
       default:
         return state;
     }
   }
-
 
   const [loginState, loginDispatch] = useReducer(loginReducer, loginInitialState)
 
@@ -75,7 +81,7 @@ export default function LoginForm() {
 
   const handleLogin = () => {
     let validInputs = true;
-    
+    loginDispatch({ type: 'resetFormErrors' });
     if (!loginState.inputEmail) {
       loginDispatch({ type: 'valueChange', name: 'validEmail', value: false });
       loginDispatch({ type: 'valueChange', name: 'emailHelper', value: 'Email Required' });

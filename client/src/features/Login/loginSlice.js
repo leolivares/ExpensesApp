@@ -13,6 +13,7 @@ export const authenticateUser = createAsyncThunk(
             userInfo.loginDispatch({ type: 'clear' });
             return response;
         } catch (e) {
+            userInfo.loginDispatch({ type: 'loginFailed' });
             return thunkAPI.rejectWithValue("Invalid Email/Password");
         }
 

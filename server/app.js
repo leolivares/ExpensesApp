@@ -63,10 +63,11 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   if (err.name === 'UnauthorizedError') {
-    res.status(401).send('Invalid Token');
+    res.status(401).json({ error: 'Invalid Token' });
   } else if (err.message === 'Invalid Email/Password') {
-    console.log("Send");
-    res.status(402).send('Invalid Email/Password');
+    res.status(402).json({ error: 'Invalid Email/Password' });
+  } else if (err.message === 'Email already in use') {
+    res.status(403).json({error: 'Email already in use'});
   } else {
     res.status(err.status || 500);
     res.send(err.message);
