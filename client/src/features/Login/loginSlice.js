@@ -13,7 +13,7 @@ export const authenticateUser = createAsyncThunk(
             userInfo.loginDispatch({ type: 'clear' });
             return response;
         } catch (e) {
-            return e.message;
+            return thunkAPI.rejectWithValue("Invalid Email/Password");
         }
 
     }
@@ -43,7 +43,7 @@ const loginSlice = createSlice({
         [authenticateUser.rejected]: (state, action) => {
             state.loading = false;
             state.loginStatus = false;
-            console.log(action);
+            // console.log(action.payload);
         }
     }
 })
