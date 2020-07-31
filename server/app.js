@@ -59,13 +59,20 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
+  console.log(err.message);
+
   // render the error page
   if (err.name === 'UnauthorizedError') {
     res.status(401).send('Invalid Token');
+  } else if (err.message === 'Invalid Email/Password') {
+    console.log("Send");
+    res.status(402).send('Invalid Email/Password');
+  } else {
+    res.status(err.status || 500);
+    res.send(err.message);
   }
 
-  res.status(err.status || 500);
-  res.send(err.message);
+
 });
 
 module.exports = app;

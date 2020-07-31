@@ -26,7 +26,7 @@ router.post('/auth', async function(req, res, next) {
     }
     next(Error("Invalid Email/Password"));
   } catch(error) {
-    next(error);
+    next(Error("Invalid Email/Password"));
   }
 });
 

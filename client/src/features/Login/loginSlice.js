@@ -6,10 +6,16 @@ import Cookies from 'js-cookie';
 export const authenticateUser = createAsyncThunk(
     'users/authenticate',
     async (userInfo, thunkAPI) => {
-        const response = await authUser(userInfo.email, userInfo.password);
-        Cookies.set('token', response);
-        thunkAPI.dispatch(displayDialog(false));
-        return response;
+        try {
+            const response = await authUser(userInfo.email, userInfo.password);
+            Cookies.set('token', response);
+            thunkAPI.dispatch(displayDialog(false));
+            userInfo.loginDispatch({ type: 'clear' });
+            return response;
+        } catch (e) {
+            return e.message;
+        }
+
     }
 ) 
 
@@ -18,7 +24,7 @@ const loginSlice = createSlice({
     initialState: {
         loading: false,
         openDialog: false,
-        failedLogin: false
+        loginStatus: false
     },
     reducers: {
         displayDialog(state, action) {
@@ -32,10 +38,12 @@ const loginSlice = createSlice({
         },
         [authenticateUser.fulfilled]: (state, action) => {
             state.loading = false;
+            state.loginStatus = true;
         },
         [authenticateUser.rejected]: (state, action) => {
             state.loading = false;
-            state.failedLogin = true;
+            state.loginStatus = false;
+            console.log(action);
         }
     }
 })

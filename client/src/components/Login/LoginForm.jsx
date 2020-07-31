@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useReducer } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { authenticateUser, displayDialog } from "./../../features/Login/loginSlice";
@@ -45,17 +45,29 @@ const LoginTextField = withStyles({
 export default function LoginForm() {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { failedLogin } = useSelector(state => state.login);
 
-  const [inputEmail, setInputEmail] = useState('');
-  const [inputPassword, setInputPassword] = useState('');
-  const [validEmail, setValidEmail] = useState(true);
-  const [emailHelper, setEmailHelper] = useState('');
-  const [validPassword, setValidPassword] = useState(true);
-  const [passwordHelper, setPasswordHelper] = useState('');
+  const loginInitialState = {
+    inputEmail: '',
+    inputPassword: '',
+    validEmail: true,
+    emailHelper: '',
+    validPassword: true,
+    passwordHelper: ''
+  };
 
-  const emailField = React.createRef();
-  const passwordField = React.createRef();
+  const loginReducer = (state, action) => {
+    switch (action.type) {
+      case 'valueChange':
+        return { ...state, [action.name]: action.value };
+      case 'clear':
+        return { ...loginInitialState };
+      default:
+        return state;
+    }
+  }
+
+
+  const [loginState, loginDispatch] = useReducer(loginReducer, loginInitialState)
 
   const handleClose = () => {
     dispatch(displayDialog(false));
@@ -63,24 +75,26 @@ export default function LoginForm() {
 
   const handleLogin = () => {
     let validInputs = true;
-    if (!inputEmail) {
-      setValidEmail(false);
-      setEmailHelper("Email Required");
+    
+    if (!loginState.inputEmail) {
+      loginDispatch({ type: 'valueChange', name: 'validEmail', value: false });
+      loginDispatch({ type: 'valueChange', name: 'emailHelper', value: 'Email Required' });
       validInputs = false;
     }
-    if (!inputPassword) {
-      setValidPassword(false);
-      setPasswordHelper("Password Required");
+    if (!loginState.inputPassword) {
+      loginDispatch({ type: 'valueChange', name: 'validPassword', value: false });
+      loginDispatch({ type: 'valueChange', name: 'passwordHelper', value: 'Password Required' });
       validInputs = false;
     }
     if (validInputs) {
-        dispatch(authenticateUser({ email: inputEmail, password: inputPassword }));
+        dispatch(authenticateUser({ email: loginState.inputEmail, 
+                                    password: loginState.inputPassword, 
+                                    loginDispatch }));
     }
   }
 
   return (
     <div>
-
       <DialogContent>
         <LoginTextField
           className={classes.textField}
@@ -89,11 +103,11 @@ export default function LoginForm() {
           variant="outlined"
           id="email-input"
           margin="normal"
-          error={!validEmail || failedLogin}
-          helperText={emailHelper}
+          value={loginState.inputEmail}
+          error={!loginState.validEmail}
+          helperText={loginState.emailHelper}
           fullWidth
-          onChange={e => setInputEmail(e.target.value)}
-          ref={emailField}
+          onChange={e => loginDispatch({type: 'valueChange', name: 'inputEmail', value: e.target.value})}
         />
 
         <LoginTextField
@@ -102,11 +116,11 @@ export default function LoginForm() {
           variant="outlined"
           id="password-input"
           margin="normal"
+          value={loginState.inputPassword}
           fullWidth
-          error={!validPassword || failedLogin}
-          helperText={passwordHelper}
-          onChange={e => setInputPassword(e.target.value)}
-          ref={passwordField}
+          error={!loginState.validPassword}
+          helperText={loginState.passwordHelper}
+          onChange={e => loginDispatch({type: 'valueChange', name: 'inputPassword', value: e.target.value})}
           type="password"
         />
       </DialogContent>
