@@ -9,8 +9,8 @@ export const authenticateUser = createAsyncThunk(
         try {
             const response = await authUser(userInfo.email, userInfo.password);
             Cookies.set('token', response);
-            thunkAPI.dispatch(loginUser());
             userInfo.loginDispatch({ type: 'clear' });
+            thunkAPI.dispatch(loginUser());
             return response;
         } catch (e) {
             userInfo.loginDispatch({ type: 'loginFailed' });
