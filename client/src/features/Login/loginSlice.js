@@ -25,8 +25,7 @@ const loginSlice = createSlice({
     name: 'login',
     initialState: {
         loading: false,
-        openDialog: false,
-        loginStatus: false
+        openDialog: false
     },
     reducers: {
         displayDialog(state, action) {
@@ -35,7 +34,6 @@ const loginSlice = createSlice({
         },
         loginUser(state, action) {
             state.openDialog = false;
-            state.loginStatus = true;
         }
     },
     extraReducers: {
@@ -44,11 +42,9 @@ const loginSlice = createSlice({
         },
         [authenticateUser.fulfilled]: (state, action) => {
             state.loading = false;
-            state.loginStatus = true;
         },
         [authenticateUser.rejected]: (state, action) => {
             state.loading = false;
-            state.loginStatus = false;
             // console.log(action.payload);
         }
     }
