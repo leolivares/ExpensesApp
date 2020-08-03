@@ -11,8 +11,9 @@ export const registerUser = createAsyncThunk(
                 userInfo.last_name, 
                 userInfo.birthday, 
                 userInfo.password);
-            thunkAPI.dispatch(displayDialog(false));
+            await (async () => new Promise(resolve => setTimeout(resolve, 1000)))();
             userInfo.registerDispatch({ type: 'clear' });
+            thunkAPI.dispatch(displayDialog(false));
             return response;
         } catch(e) {
             userInfo.registerDispatch({ type: 'registerFailed' });

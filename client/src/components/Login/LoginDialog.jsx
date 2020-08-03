@@ -7,7 +7,6 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
-import Container from '@material-ui/core/Container';
 
 
 // const useStyles = makeStyles((theme) => ({
@@ -15,7 +14,7 @@ import Container from '@material-ui/core/Container';
 // }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="down" ref={ref} {...props} />;
+  return <Slide direction="down" ref={ref} {...props} />;
 });
 
 export default function LoginDialog() {
@@ -46,10 +45,8 @@ export default function LoginDialog() {
         aria-labelledby="alert-dialog-slide-title"
         aria-describedby="alert-dialog-slide-description"
       >
-        <Container>
-          <DialogTitle id="form-dialog-title">Log In</DialogTitle> 
-          <LoginForm></LoginForm>
-        </Container>
+        <DialogTitle id="form-dialog-title">Log In</DialogTitle>
+        <LoginForm></LoginForm>
       </Dialog>
     </div>
   );

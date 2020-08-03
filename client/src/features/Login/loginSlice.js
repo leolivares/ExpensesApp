@@ -9,6 +9,7 @@ export const authenticateUser = createAsyncThunk(
         try {
             const response = await authUser(userInfo.email, userInfo.password);
             Cookies.set('token', response);
+            await (async () => new Promise(resolve => setTimeout(resolve, 1000)))();
             userInfo.loginDispatch({ type: 'clear' });
             thunkAPI.dispatch(loginUser());
             return response;

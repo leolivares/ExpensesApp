@@ -8,6 +8,13 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import Badge from "@material-ui/core/Badge";
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import MoreIcon from '@material-ui/icons/MoreVert';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import Cookies from 'js-cookie';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -25,28 +32,75 @@ const useStyles = makeStyles((theme) => ({
 export default function NavBar() {
   const classes = useStyles();
   const { loginStatus } = useSelector(state => state.login);
+
+  const menuId = 'primary-search-account-menu';
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const isMenuOpen = Boolean(anchorEl);
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+    </Menu>
+  );
+
   let userStatus;
-  if (!loginStatus) {
+  if (!Cookies.get('token')) {
     userStatus = <>
-    <LoginDialog></LoginDialog>
-    <RegisterDialog></RegisterDialog>
+      <LoginDialog></LoginDialog>
+      <RegisterDialog></RegisterDialog>
     </>
   } else {
-    userStatus = <div>Hola</div>
+    userStatus = <div>
+    <div className={classes.sectionDesktop}>
+      <IconButton color="inherit">
+        <Badge badgeContent={0} color="secondary">
+          <NotificationsIcon />
+        </Badge>
+      </IconButton>
+      <IconButton
+        edge="end"
+        aria-label="account of current user"
+        aria-controls={menuId}
+        aria-haspopup="true"
+        onClick={handleProfileMenuOpen}
+        color="inherit"
+      >
+        <AccountCircle />
+      </IconButton>
+    </div>
+    {renderMenu}
+    </div>
   }
 
   return (
-      <AppBar position="static">
-          <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-              <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-              Expenses App
+    <AppBar position="static">
+      <Toolbar>
+        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+          <MenuIcon />
+        </IconButton>
+        <Typography variant="h6" className={classes.title}>
+          Expenses App
           </Typography>
-          {userStatus}
+        {userStatus}
 
-          </Toolbar>
-      </AppBar>
+      </Toolbar>
+    </AppBar>
   );
 }

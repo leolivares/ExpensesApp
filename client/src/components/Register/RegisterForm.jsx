@@ -6,6 +6,8 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
+import { CircularProgress } from '@material-ui/core';
+import Container from '@material-ui/core/Container';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -68,15 +70,17 @@ export default function LoginForm() {
             case 'valueChange':
                 return { ...state, [action.name]: action.value };
             case 'resetFormErrors':
-                return { ...registerInitialState, inputEmail: state.inputEmail, 
-                                                  inputPassword: state.inputPassword,
-                                                  inputBirthday: state.inputBirthday,
-                                                  inputFirstName: state.inputFirstName,
-                                                  inputLastName: state.inputLastName };
+                return {
+                    ...registerInitialState, inputEmail: state.inputEmail,
+                    inputPassword: state.inputPassword,
+                    inputBirthday: state.inputBirthday,
+                    inputFirstName: state.inputFirstName,
+                    inputLastName: state.inputLastName
+                };
             case 'registerFailed':
                 return {
                     ...state, emailHelper: 'Email already in use',
-                              validEmail: false
+                    validEmail: false
                 };
             case 'clear':
                 return { ...registerInitialState };
@@ -86,6 +90,7 @@ export default function LoginForm() {
     }
 
     const [registerState, registerDispatch] = useReducer(registerReducer, registerInitialState);
+    const { loading } = useSelector(state => state.register);
 
 
     const handleClose = () => {
@@ -133,6 +138,18 @@ export default function LoginForm() {
         }
     }
 
+    if (loading) {
+        return (
+            <div>
+                <DialogContent>
+                    <Container>
+                        <CircularProgress color="secondary" />
+                    </Container>
+                </DialogContent>
+            </div>
+        )
+    }
+
     return (
         <div>
 
@@ -148,7 +165,7 @@ export default function LoginForm() {
                     error={!registerState.validEmail}
                     helperText={registerState.emailHelper}
                     fullWidth
-                    onChange={e => registerDispatch({type: 'valueChange', name: 'inputEmail', value: e.target.value})}
+                    onChange={e => registerDispatch({ type: 'valueChange', name: 'inputEmail', value: e.target.value })}
                 />
 
                 <RegisterTextField
@@ -162,7 +179,7 @@ export default function LoginForm() {
                     error={!registerState.validNames}
                     helperText={registerState.namesHelper}
                     fullWidth
-                    onChange={e => registerDispatch({type: 'valueChange', name: 'inputFirstName', value: e.target.value})}
+                    onChange={e => registerDispatch({ type: 'valueChange', name: 'inputFirstName', value: e.target.value })}
                 />
 
                 <RegisterTextField
@@ -176,7 +193,7 @@ export default function LoginForm() {
                     error={!registerState.validNames}
                     helperText={registerState.namesHelper}
                     fullWidth
-                    onChange={e => registerDispatch({type: 'valueChange', name: 'inputLastName', value: e.target.value})}
+                    onChange={e => registerDispatch({ type: 'valueChange', name: 'inputLastName', value: e.target.value })}
                 />
 
                 <RegisterTextField
@@ -193,7 +210,7 @@ export default function LoginForm() {
                     value={registerState.inputBirthday}
                     error={!registerState.validBirthday}
                     helperText={registerState.birthdayHelper}
-                    onChange={e => registerDispatch({type: 'valueChange', name: 'inputBirthday', value: e.target.value})}
+                    onChange={e => registerDispatch({ type: 'valueChange', name: 'inputBirthday', value: e.target.value })}
                     required
                 />
 
@@ -207,7 +224,7 @@ export default function LoginForm() {
                     value={registerState.inputPassword}
                     error={!registerState.validPassword}
                     helperText={registerState.passwordHelper}
-                    onChange={e => registerDispatch({type: 'valueChange', name: 'inputPassword', value: e.target.value})}
+                    onChange={e => registerDispatch({ type: 'valueChange', name: 'inputPassword', value: e.target.value })}
                     type="password"
                 />
 
@@ -221,7 +238,7 @@ export default function LoginForm() {
                     value={registerState.inputPasswordConfirmation}
                     error={!registerState.validPassword}
                     helperText={registerState.passwordHelper}
-                    onChange={e => registerDispatch({type: 'valueChange', name: 'inputPasswordConfirmation', value: e.target.value})}
+                    onChange={e => registerDispatch({ type: 'valueChange', name: 'inputPasswordConfirmation', value: e.target.value })}
                     type="password"
                 />
             </DialogContent>

@@ -6,6 +6,8 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
+import { CircularProgress } from '@material-ui/core';
+import Container from '@material-ui/core/Container';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -45,7 +47,7 @@ const LoginTextField = withStyles({
 export default function LoginForm() {
   const classes = useStyles();
   const dispatch = useDispatch();
-  
+
 
   const loginInitialState = {
     inputEmail: '',
@@ -63,10 +65,12 @@ export default function LoginForm() {
       case 'resetFormErrors':
         return { ...loginInitialState, inputEmail: state.inputEmail, inputPassword: state.inputPassword };
       case 'loginFailed':
-        return { ...state, emailHelper: 'Invalid Email/Password', 
-                           passwordHelper: 'Invalid Email/Password', 
-                           validEmail: false, 
-                           validPassword: false };
+        return {
+          ...state, emailHelper: 'Invalid Email/Password',
+          passwordHelper: 'Invalid Email/Password',
+          validEmail: false,
+          validPassword: false
+        };
       case 'clear':
         return { ...loginInitialState };
       default:
@@ -94,10 +98,26 @@ export default function LoginForm() {
       validInputs = false;
     }
     if (validInputs) {
-        dispatch(authenticateUser({ email: loginState.inputEmail, 
-                                    password: loginState.inputPassword, 
-                                    loginDispatch }));
+      dispatch(authenticateUser({
+        email: loginState.inputEmail,
+        password: loginState.inputPassword,
+        loginDispatch
+      }));
     }
+  }
+
+  const { loading } = useSelector(state => state.login);
+
+  if (loading) {
+    return (
+      <div>
+        <DialogContent>
+          <Container>
+            <CircularProgress color="secondary" />
+          </Container>
+        </DialogContent>
+      </div>
+    )
   }
 
   return (
@@ -114,7 +134,7 @@ export default function LoginForm() {
           error={!loginState.validEmail}
           helperText={loginState.emailHelper}
           fullWidth
-          onChange={e => loginDispatch({type: 'valueChange', name: 'inputEmail', value: e.target.value})}
+          onChange={e => loginDispatch({ type: 'valueChange', name: 'inputEmail', value: e.target.value })}
         />
 
         <LoginTextField
@@ -127,7 +147,7 @@ export default function LoginForm() {
           fullWidth
           error={!loginState.validPassword}
           helperText={loginState.passwordHelper}
-          onChange={e => loginDispatch({type: 'valueChange', name: 'inputPassword', value: e.target.value})}
+          onChange={e => loginDispatch({ type: 'valueChange', name: 'inputPassword', value: e.target.value })}
           type="password"
         />
       </DialogContent>
