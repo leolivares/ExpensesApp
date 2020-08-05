@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { useDispatch, useSelector } from 'react-redux';
 import LoginDialog from './../Login/LoginDialog';
 import RegisterDialog from './../Register/RegisterDialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -11,10 +11,10 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Badge from "@material-ui/core/Badge";
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import MoreIcon from '@material-ui/icons/MoreVert';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import Cookies from 'js-cookie';
+import { loginUser } from 'features/Login/loginSlice';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -31,11 +31,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function NavBar() {
   const classes = useStyles();
-  const { loginStatus } = useSelector(state => state.login);
 
   const menuId = 'primary-search-account-menu';
   const [anchorEl, setAnchorEl] = React.useState(null);
   const isMenuOpen = Boolean(anchorEl);
+
+  const { loginStatus } = useSelector(state => state.login);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -60,34 +62,14 @@ export default function NavBar() {
     </Menu>
   );
 
-  let userStatus;
-  if (!Cookies.get('token')) {
-    userStatus = <>
-      <LoginDialog></LoginDialog>
-      <RegisterDialog></RegisterDialog>
-    </>
-  } else {
-    userStatus = <div>
-    <div className={classes.sectionDesktop}>
-      <IconButton color="inherit">
-        <Badge badgeContent={0} color="secondary">
-          <NotificationsIcon />
-        </Badge>
-      </IconButton>
-      <IconButton
-        edge="end"
-        aria-label="account of current user"
-        aria-controls={menuId}
-        aria-haspopup="true"
-        onClick={handleProfileMenuOpen}
-        color="inherit"
-      >
-        <AccountCircle />
-      </IconButton>
-    </div>
-    {renderMenu}
-    </div>
-  }
+  useEffect(() => {
+    if (Cookies.get('token')) {
+      console.log("loginStatsus");
+      setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
+    }
+  }, [loginStatus]);
 
   return (
     <AppBar position="static">
@@ -98,7 +80,35 @@ export default function NavBar() {
         <Typography variant="h6" className={classes.title}>
           Expenses App
           </Typography>
-        {userStatus}
+        {!loggedIn &&
+          <>
+            <LoginDialog></LoginDialog>
+            <RegisterDialog></RegisterDialog>
+          </>
+        }
+
+        {loggedIn &&
+          <div>
+            <div className={classes.sectionDesktop}>
+              <IconButton color="inherit">
+                <Badge badgeContent={0} color="secondary">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+              <IconButton
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+            </div>
+            {renderMenu}
+          </div>
+        }
 
       </Toolbar>
     </AppBar>

@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { createUser } from "./../../utils/userApi";
+import { authUser } from "./../../utils/userApi";
+import Cookies from 'js-cookie';
 
 
 export const registerUser = createAsyncThunk(
@@ -14,6 +16,10 @@ export const registerUser = createAsyncThunk(
             await (async () => new Promise(resolve => setTimeout(resolve, 1000)))();
             userInfo.registerDispatch({ type: 'clear' });
             thunkAPI.dispatch(displayDialog(false));
+            console.log(`Check: ${userInfo.email} ${userInfo.password}`);
+
+            const token = await authUser(userInfo.email, userInfo.password);
+            Cookies.set('token', token);
             return response;
         } catch(e) {
             userInfo.registerDispatch({ type: 'registerFailed' });

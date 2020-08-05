@@ -1,4 +1,4 @@
-// import Cookies from 'js-cookie';
+
 
 export const authUser = async (email, password) => {
 
