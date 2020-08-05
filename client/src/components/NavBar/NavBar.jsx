@@ -64,7 +64,6 @@ export default function NavBar() {
 
   useEffect(() => {
     if (Cookies.get('token')) {
-      console.log("loginStatsus");
       setLoggedIn(true);
     } else {
       setLoggedIn(false);
