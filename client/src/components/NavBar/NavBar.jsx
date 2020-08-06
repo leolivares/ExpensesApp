@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
+import { logoutUser, loginUser } from './../../features/Login/loginSlice';
 import LoginDialog from './../Login/LoginDialog';
 import RegisterDialog from './../Register/RegisterDialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -14,7 +15,6 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import Cookies from 'js-cookie';
-import { loginUser } from 'features/Login/loginSlice';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function NavBar() {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const menuId = 'primary-search-account-menu';
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -47,6 +48,12 @@ export default function NavBar() {
     setAnchorEl(null);
   };
 
+  const handleSignOut = async () => {
+    await Cookies.remove('token');
+    dispatch(logoutUser());
+    setAnchorEl(null);
+  };
+
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -58,17 +65,17 @@ export default function NavBar() {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
     </Menu>
   );
 
   useEffect(() => {
     if (Cookies.get('token')) {
-      setLoggedIn(true);
+      dispatch(loginUser());
     } else {
-      setLoggedIn(false);
+      dispatch(logoutUser());
     }
-  }, [loginStatus]);
+  }, [dispatch, loginStatus]);
 
   return (
     <AppBar position="static">
@@ -79,14 +86,14 @@ export default function NavBar() {
         <Typography variant="h6" className={classes.title}>
           Expenses App
           </Typography>
-        {!loggedIn &&
+        {!loginStatus &&
           <>
             <LoginDialog></LoginDialog>
             <RegisterDialog></RegisterDialog>
           </>
         }
 
-        {loggedIn &&
+        {loginStatus &&
           <div>
             <div className={classes.sectionDesktop}>
               <IconButton color="inherit">

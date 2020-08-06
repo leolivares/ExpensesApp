@@ -11,6 +11,7 @@ export const authenticateUser = createAsyncThunk(
             Cookies.set('token', response);
             await (async () => new Promise(resolve => setTimeout(resolve, 1000)))();
             userInfo.loginDispatch({ type: 'clear' });
+            thunkAPI.dispatch(displayDialog(false));
             thunkAPI.dispatch(loginUser());
             return response;
         } catch (e) {
@@ -29,12 +30,13 @@ const loginSlice = createSlice({
     },
     reducers: {
         displayDialog(state, action) {
-            const display = action.payload;
-            state.openDialog = display;
+            state.openDialog = action.payload;
         },
         loginUser(state, action) {
-            state.openDialog = false;
             state.loginStatus = true;
+        },
+        logoutUser(state, action) {
+            state.loginStatus = false;
         }
     },
     extraReducers: {
@@ -53,5 +55,5 @@ const loginSlice = createSlice({
 })
 
 
-export const { displayDialog, loginUser } = loginSlice.actions;
+export const { displayDialog, loginUser, logoutUser } = loginSlice.actions;
 export default loginSlice.reducer;
